@@ -10,20 +10,22 @@ import { messages } from "./data";
 
 // store
 import { useRecoilState } from 'recoil';
-import { chatDrawerAtom } from '@/store/atoms';
+import { chatDrawerAtom, conferenceModalAtom } from '@/store/atoms';
 
 const ChatboxContainer = () => {
     const [showChatBox, setShowChatBox] = useRecoilState(chatDrawerAtom)
+    const [modalState, setModalState] = useRecoilState(conferenceModalAtom)
 
-    const toggleChatBox = () => {
-        setShowChatBox(!showChatBox)
+    const dockSidebar = () => {
+        setShowChatBox(true)
     }
 
     const props = {
         open: showChatBox,
-        onClose: toggleChatBox,
+        onDock: dockSidebar,
         messages: messages,
-        title: "Chats"
+        title: "Chats",
+        openConferenceModal: () => setModalState(prev => ({...prev, open: true}))
     }
 
   return (

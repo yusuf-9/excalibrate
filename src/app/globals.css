@@ -16,3 +16,7 @@
       --accent: 168, 165, 255;
   }
 }
+
+body {
+  @apply h-screen w-screen overflow-hidden
+}

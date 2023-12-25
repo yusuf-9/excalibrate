@@ -2,21 +2,26 @@ import React from "react";
 
 // components
 import { FaPaperPlane } from "react-icons/fa";
+import { FaVideo } from "react-icons/fa6";
 import { Sidebar } from "@excalidraw/excalidraw";
 
 type chatboxProps = {
   open: boolean;
-  onClose: () => void;
+  onDock: () => void;
+  openConferenceModal: () => void;
   messages: any[];
   title: string;
 };
 
 const Chatbox = (props: chatboxProps) => {
-  const { open, onClose, title } = props;
+  const { open, onDock, title, openConferenceModal } = props;
   return (
-      <Sidebar name="chat" docked={open} onDock={onClose} className="xl:!w-[20vw]">
-        <Sidebar.Header className="flex justify-center">
-          <h3 className="text-lg font-bold">{title}</h3>
+      <Sidebar name="chat" docked={open} onDock={onDock} className="xl:!w-[20vw]">
+        <Sidebar.Header className="flex justify-center gap-2">
+          <h3 className="text-lg font-bold flex-grow">{title}</h3>
+          <button className="bg-accent text-contrast-dark p-2 rounded-full" onClick={openConferenceModal}>
+            <FaVideo />
+          </button>
         </Sidebar.Header>
         <ChatMessages {...props} />
         <ChatInput {...props} />
@@ -36,7 +41,7 @@ const ChatMessage = ({ author, message }: any) => (
   <div className={`flex items-start ${author === "You" ? "justify-end" : "justify-start"}`}>
     <div className={`border border-accent text-primary-dark px-3 py-2 rounded-2xl text-sm ${author === "You" ? "rounded-br-none translate-x-2" : "rounded-bl-none -translate-x-2"}`}>
       <p className="mb-0">{message + message + message + message}</p>
-      <p className={`${author === "You" ? "text-right" : "text-right"} text-xs mt-2`}>{author}</p>
+      <p className={`${author === "You" ? "text-right" : "text-right"} text-xs mt-2 text-accent`}>{author}</p>
     </div>
   </div>
 );
