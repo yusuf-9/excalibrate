@@ -7,7 +7,7 @@ export const themeAtom = atom({
 });
 
 export const chatDrawerAtom = atom({  
-  key: "chatDrawerOpen",
+  key: "chatDrawerDocked",
   default: false,
 }); 
 
@@ -17,4 +17,4 @@ export const conferenceModalAtom = atom({
     open: false,
     docked: false,
   },
-}); 
+});
