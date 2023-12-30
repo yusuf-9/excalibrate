@@ -18,6 +18,8 @@ const contrast = {
 
 const accent = {
   accent: generateColorClass('accent'),
+  'accent-dark': generateColorClass('accent-dark'),
+  'accent-darker': generateColorClass('accent-darker'),
 }
 
 const config: Config = {

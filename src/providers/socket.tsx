@@ -8,7 +8,7 @@ interface SocketContextProps {
     socket: Socket | null;
 }
 
-const SocketContext = createContext<SocketContextProps>({
+export const SocketContext = createContext<SocketContextProps>({
     socket: null,
 });
 

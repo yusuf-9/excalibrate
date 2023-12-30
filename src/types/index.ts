@@ -1,2 +1,1 @@
-export type ThemeOptions = 'light' | 'dark';
-
+export * from "./store"

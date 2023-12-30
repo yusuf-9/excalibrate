@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -6,7 +6,7 @@ import { useRecoilValue } from "recoil";
 // components
 import Board from "./board";
 import { ChatboxTrigger } from "@/components/chatbox";
-import ThemeToggle from "@/components/theme-toggle";
+import { ThemeToggle } from "@/components/theme";
 
 // constants
 import { THEME } from "@excalidraw/excalidraw";
@@ -18,7 +18,7 @@ import { useStore } from "@/hooks/index";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
 
 const BoardContainer = () => {
-  const {themeAtom} = useStore();
+  const { themeAtom } = useStore();
   const activeTheme = useRecoilValue(themeAtom);
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
 
@@ -27,28 +27,29 @@ const BoardContainer = () => {
     if (!excalidrawAPI) return;
     excalidrawAPI.updateScene({
       appState: {
-        theme : activeTheme === "dark" ? THEME.DARK : THEME.LIGHT,
+        theme: activeTheme === "dark" ? THEME.DARK : THEME.LIGHT,
       },
     });
-  }, [activeTheme, excalidrawAPI])
+  }, [activeTheme, excalidrawAPI]);
 
   // Function to render the top right UI
   const getTopRightUI = useCallback(() => {
-    return <div className="flex gap-2">
-      <ThemeToggle />
-      <ChatboxTrigger />
+    return (
+      <div className="flex gap-2">
+        <ThemeToggle />
+        <ChatboxTrigger />
       </div>
+    );
   }, []);
-
 
   return (
     <main className="h-screen w-screen">
-      <Board 
+      <Board
         initialData={{
           appState: {
-            theme : activeTheme === "dark" ? THEME.DARK : THEME.LIGHT,
+            theme: activeTheme === "dark" ? THEME.DARK : THEME.LIGHT,
             defaultSidebarDockedPreference: false,
-          }
+          },
         }}
         renderTopRightUI={getTopRightUI}
         excalidrawAPI={setExcalidrawAPI}

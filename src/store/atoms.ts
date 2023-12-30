@@ -1,21 +1,36 @@
 import { THEME_OPTIONS } from "@/constants";
-import { ThemeOptions } from "@/types";
+import { ConferenceModalStateType, ThemeOptions, UserType } from "@/types";
 import { atom } from "recoil";
 
-export const themeAtom = atom({
+// Theme atom
+export const themeAtom = atom<ThemeOptions>({
   key: "activeTheme",
-  default: THEME_OPTIONS.DARK as ThemeOptions,
+  default: THEME_OPTIONS.LIGHT,
 });
 
-export const chatDrawerAtom = atom({  
+// Chat Drawer atom
+export const chatDrawerAtom = atom<boolean>({  
   key: "chatDrawerDocked",
   default: false,
 }); 
 
-export const conferenceModalAtom = atom({  
+// Conference Modal atom
+export const conferenceModalAtom = atom<ConferenceModalStateType>({  
   key: "conferenceModal",
   default: {
     open: false,
     docked: false,
   },
+});
+
+// User atom
+export const userAtom = atom<UserType>({
+  key: "user",
+  default: null,
+});
+
+// Users atom
+export const collaboraters = atom<UserType[]>({ 
+  key: "collaboraters",
+  default: [],
 });
