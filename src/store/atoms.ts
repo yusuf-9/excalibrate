@@ -30,7 +30,7 @@ export const userAtom = atom<UserType>({
 });
 
 // Users atom
-export const collaboraters = atom<UserType[]>({ 
+export const collaboratersAtom = atom<UserType[]>({ 
   key: "collaboraters",
   default: [],
 });

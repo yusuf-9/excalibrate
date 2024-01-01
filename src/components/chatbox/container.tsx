@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 // components
 import Chatbox from "./chatbox";
 
 // dummy data
-import { messages } from "./data";
+import { messages as dummyMessages} from "./data";
 
 // store
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -16,27 +16,28 @@ import { useSocket } from "@/hooks";
 const ChatboxContainer = () => {
   const [showChatBox, setShowChatBox] = useRecoilState(chatDrawerAtom);
   const setModalState = useSetRecoilState(conferenceModalAtom);
-  const {socket} = useSocket();
-
   const user = useRecoilValue(userAtom);
 
-  console.log({user})
+  const {socket} = useSocket();
+  const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
-    if (socket) {
-      socket?.on("message", (message: string) => {
-        console.log(`Message recieved: ${message}`);
+      socket?.on("message-recieved", (message) => {
+        console.log(`Message recieved`, message);
+        setMessages(prev => [...prev, message]);
       });
-    }
 
     return () => {
-      socket?.off("message");
+      socket?.off("message-recieved");
     };
   }, [socket]);
 
   const handleSubmitMessage = useCallback((message: string) => {
       try {
-        socket?.emit("message", message);
+        const messagePayload = {
+          message,
+        }
+        socket?.emit("message", messagePayload);
       } catch (error) {
         console.log(error);
       }

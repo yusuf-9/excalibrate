@@ -8,5 +8,5 @@ export type ConferenceModalStateType = {
 export type UserType = null | {
   socketId: string;
   name: string;
-  room?: string;
+  roomId?: string;
 };

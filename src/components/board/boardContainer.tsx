@@ -9,7 +9,7 @@ import { ChatboxTrigger } from "@/components/chatbox";
 import { ThemeToggle } from "@/components/theme";
 
 // constants
-import { THEME } from "@excalidraw/excalidraw";
+import { LiveCollaborationTrigger, THEME } from "@excalidraw/excalidraw";
 
 // store
 import { useStore } from "@/hooks/index";
@@ -36,6 +36,12 @@ const BoardContainer = () => {
   const getTopRightUI = useCallback(() => {
     return (
       <div className="flex gap-2">
+         <LiveCollaborationTrigger
+            isCollaborating={true}
+            onSelect={() => {
+              window.alert("You clicked on collab button");
+            }}
+          />
         <ThemeToggle />
         <ChatboxTrigger />
       </div>

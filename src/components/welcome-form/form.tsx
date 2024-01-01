@@ -1,43 +1,20 @@
 "use client";
 
-import { useSocket } from "@/hooks";
-import { userAtom } from "@/store/atoms";
+import { useSocket, useUser } from "@/hooks";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
 
-const WelcomeForm = () => {
-  const setUser = useSetRecoilState(userAtom);
-
-  const router = useRouter();
-  const { socket } = useSocket();
+const WelcomeForm = ({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) => {
+  
+  const roomId = searchParams?.roomId?.toString();
+  
   const [name, setName] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { handleJoinRoom } = useUser();
 
   const handleProceed = (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
     e?.preventDefault();
-    socket?.emit("join-room", { name });
+    handleJoinRoom({ name, roomId });
   };
-
-  useEffect(() => {
-    socket?.on("joined-room", (data: any) => {
-      setUser({
-        name: data.name,
-        socketId: data.id,
-        room: data.roomId,
-      });
-
-      router.push(`/${data?.roomId}`);
-
-      setIsLoading(false);
-    });
-
-    return () => {
-      socket?.off("joined-room");
-    };
-  }, [socket, setUser, router]);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen bg-primary-light text-contrast-dark gap-10">
@@ -52,14 +29,14 @@ const WelcomeForm = () => {
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
-          className="border border-contrast-light focus-visible:outline-accent rounded-2xl p-2 mb-4"
+          className="border border-contrast-light focus-visible:outline-accent rounded-2xl p-2 mb-4 text-center text-black"
           placeholder="Enter your name"
         />
         <button
-          disabled={isLoading || name?.length < 3}
+          disabled={name?.length < 3}
           type="submit"
           className="bg-accent-dark disabled:bg-accent hover:bg-accent-darker p-2 rounded-lg text-white uppercase tracking-widest">
-          {isLoading ? <span className="loader"></span> : "Continue"}
+          Continue
         </button>
       </form>
     </div>

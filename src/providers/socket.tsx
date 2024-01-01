@@ -1,7 +1,8 @@
 "use client"
 
+import { UserType } from '@/types';
 import React, { createContext, useEffect, useState } from 'react';
-import { io as ClientSocket, Socket } from 'socket.io-client';
+import { io as socketIO, Socket } from 'socket.io-client';
 
 // Create the context
 interface SocketContextProps {
@@ -18,12 +19,13 @@ type SocketProviderProps = {   children: React.ReactNode };
 const SocketProvider = ({ children }: SocketProviderProps) => {
     const [socket, setSocket] = useState<Socket | null>(null);
 
+
     useEffect(() => {
         // Connect to the Socket.io server
-        const socketInstance = new (ClientSocket as any)(process.env.NEXT_PUBLIC_SITE_URL, {
+        const socketInstance = socketIO(process.env.NEXT_PUBLIC_SITE_URL!, {
             path: '/api/socket/io',
             addTrailingSlash: false,
-        }); 
+        });
 
         socketInstance.on('connect', () => {
             console.log('Connected to Socket.io server');

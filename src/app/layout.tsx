@@ -7,7 +7,7 @@ import SocketProvider from "@/providers/socket";
 import StoreProvider from "@/providers/store";
 
 // Components
-import { ThemeUpdater } from "@/components/theme";
+import UserProvider from "@/providers/user";
 
 const font = Poppins({ weight: ["400", "700"], subsets: ["latin"] });
 
@@ -21,7 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={font.className}>
         <StoreProvider>
-            <SocketProvider>{children}</SocketProvider>
+          <SocketProvider>
+            <UserProvider>{children}</UserProvider>
+          </SocketProvider>
         </StoreProvider>
       </body>
     </html>

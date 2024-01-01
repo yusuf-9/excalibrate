@@ -14,7 +14,11 @@ export const config = {
   },
 };
 
-const socketConnections = new Set();
+const socketConnections = new Set<{
+  id: string;
+  name: string;
+  roomId: string;
+}>();
 
 export default function Handler(req: NextApiRequest, res: NextApiResponseWithSocket) {
   if (res.socket.server) {
@@ -32,7 +36,7 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
     // when initial connection is made
     console.log("a user connected", socket?.id);
 
-    socket.on("join-room", ({name, roomId}) => {
+    socket.on("join-room", ({ name, roomId }) => {
       try {
         const newRoomId = roomId ?? v4();
         const userData = {
@@ -42,19 +46,32 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
         };
         socket.join(newRoomId);
         socketConnections.add(userData);
-        console.log("joining room");
-        socket.emit("joined-room", userData);
+        socket.emit("user-joined-room", userData); // Notify new user that he has joined the room
+        socket.broadcast.to(newRoomId).emit("new-user-joined-room", userData); // Notify existing users that a new user has joined their room
       } catch (error) {
         console.log({ error });
       }
     });
 
-    socket.on("message", data => {
-      socket.emit("message", data);
+    socket.on("message", ({ message }) => {
+      try {
+        const socketConnectsArray = Array.from(socketConnections);
+        const userConnection = socketConnectsArray.find(({ id }) => id === socket.id);
+        if(!userConnection) return;
+        
+        const { name, roomId } = userConnection;
+        io.to(roomId).emit("message-recieved", { message, name });
+      } catch (error) {
+        console.log({ error });
+      }
     });
 
-    socket.on("disconnect", socket => {
-      console.log("a user disconnected", socket);
+    socket.on("disconnect", () => {
+      socketConnections.forEach(connection => {
+        if (connection.id === socket.id) {
+          socketConnections.delete(connection);
+        }
+      })
     });
   });
 
