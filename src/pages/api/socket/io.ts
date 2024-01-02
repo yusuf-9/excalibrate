@@ -20,6 +20,13 @@ const socketConnections = new Set<{
   roomId: string;
 }>();
 
+const chatMessages = new Set<{
+  message: string;
+  author: string;
+  authorId: string;
+  roomId: string;
+}>()
+
 export default function Handler(req: NextApiRequest, res: NextApiResponseWithSocket) {
   if (res.socket.server) {
     // socket server is up and running
@@ -48,6 +55,8 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
         socketConnections.add(userData);
         socket.emit("user-joined-room", userData); // Notify new user that he has joined the room
         socket.broadcast.to(newRoomId).emit("new-user-joined-room", userData); // Notify existing users that a new user has joined their room
+        socket.emit("chat-history", Array.from(chatMessages)?.filter(({roomId}) => roomId === newRoomId));
+        console.log("emitting chat history")
       } catch (error) {
         console.log({ error });
       }
@@ -60,7 +69,11 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
         if(!userConnection) return;
         
         const { socketId, roomId, name } = userConnection;
-        io.to(roomId).emit("message-recieved", { message, author: name, authorId: socketId });
+        const messagePayload = {
+          message, author: name, authorId: socketId, roomId
+        }
+        chatMessages.add(messagePayload);
+        io.to(roomId).emit("message-recieved", messagePayload);
       } catch (error) {
         console.log({ error });
       }

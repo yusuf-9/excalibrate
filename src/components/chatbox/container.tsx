@@ -27,9 +27,15 @@ const ChatboxContainer = () => {
       socket?.on("message-recieved", (message: messageType) => {
         setMessages(prev => [...prev, message]);
       });
-
+      socket?.on("chat-history", (messages: messageType[]) => {
+        console.log("chat-history-revieved")
+        setMessages(messages);
+      });
+  
     return () => {
       socket?.off("message-recieved");
+      socket?.off("message-history");
+
     };
   }, [socket]);
 
