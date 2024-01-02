@@ -15,7 +15,7 @@ export const config = {
 };
 
 const socketConnections = new Set<{
-  id: string;
+  socketId: string;
   name: string;
   roomId: string;
 }>();
@@ -40,7 +40,7 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
       try {
         const newRoomId = roomId ?? v4();
         const userData = {
-          id: socket.id,
+          socketId: socket.id,
           name,
           roomId: newRoomId,
         };
@@ -56,11 +56,11 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
     socket.on("message", ({ message }) => {
       try {
         const socketConnectsArray = Array.from(socketConnections);
-        const userConnection = socketConnectsArray.find(({ id }) => id === socket.id);
+        const userConnection = socketConnectsArray.find(({ socketId }) => socketId === socket.id);
         if(!userConnection) return;
         
-        const { name, roomId } = userConnection;
-        io.to(roomId).emit("message-recieved", { message, name });
+        const { socketId, roomId, name } = userConnection;
+        io.to(roomId).emit("message-recieved", { message, author: name, authorId: socketId });
       } catch (error) {
         console.log({ error });
       }
@@ -68,7 +68,7 @@ export default function Handler(req: NextApiRequest, res: NextApiResponseWithSoc
 
     socket.on("disconnect", () => {
       socketConnections.forEach(connection => {
-        if (connection.id === socket.id) {
+        if (connection.socketId === socket.id) {
           socketConnections.delete(connection);
         }
       })

@@ -16,9 +16,10 @@ import { join } from "@/utils";
 
 type ThemeToggleProps = {
   className?: string;
+  iconClassName?: string;
 };
 
-const ThemeToggle = ({ className = "" }: ThemeToggleProps) => {
+const ThemeToggle = ({ className = "", iconClassName = "" }: ThemeToggleProps) => {
   const { themeAtom } = useStore();
   const [theme, setTheme] = useRecoilState(themeAtom);
 
@@ -36,10 +37,10 @@ const ThemeToggle = ({ className = "" }: ThemeToggleProps) => {
     setTheme(newTheme);
   };
 
-  const themeIcon = theme === THEME_OPTIONS.LIGHT ? <IoSunny className="h-5 w-5" /> : <MdDarkMode className="h-5 w-5" />;
+  const themeIcon = theme === THEME_OPTIONS.LIGHT ? <IoSunny className={join(iconClassName ,"h-5 w-5")} /> : <MdDarkMode className={join(iconClassName ,"h-5 w-5")} />;
 
   return (
-    <button className={join(className, "p-2 rounded-lg mr-2 text-black bg-accent")} onClick={toggleTheme}>
+    <button className={join(className, "p-2 rounded-lg text-black bg-accent")} onClick={toggleTheme}>
       {themeIcon}
     </button>
   );

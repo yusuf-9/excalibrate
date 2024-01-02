@@ -1,25 +1,26 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 
 // components
 import Board from "./board";
-import { ChatboxTrigger } from "@/components/chatbox";
-import { ThemeToggle } from "@/components/theme";
 
 // constants
-import { LiveCollaborationTrigger, THEME } from "@excalidraw/excalidraw";
+import { THEME } from "@excalidraw/excalidraw";
 
 // store
-import { useStore } from "@/hooks/index";
+import { useStore, useUser } from "@/hooks";
 
 //types
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
+import TopRightUi from "./top-right-ui";
 
 const BoardContainer = () => {
   const { themeAtom } = useStore();
   const activeTheme = useRecoilValue(themeAtom);
+
+  const { collaboraters } = useUser();
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
 
   // Effect to update the theme of the board
@@ -34,19 +35,8 @@ const BoardContainer = () => {
 
   // Function to render the top right UI
   const getTopRightUI = useCallback(() => {
-    return (
-      <div className="flex gap-2">
-         <LiveCollaborationTrigger
-            isCollaborating={true}
-            onSelect={() => {
-              window.alert("You clicked on collab button");
-            }}
-          />
-        <ThemeToggle />
-        <ChatboxTrigger />
-      </div>
-    );
-  }, []);
+    return <TopRightUi isCollaborating={collaboraters?.length > 0} />;
+  }, [collaboraters?.length]);
 
   return (
     <main className="h-screen w-screen">

@@ -5,11 +5,15 @@ import { FaPaperPlane } from "react-icons/fa";
 import { FaVideo } from "react-icons/fa6";
 import { Sidebar } from "@excalidraw/excalidraw";
 
+// types
+import { messageType } from "@/types";
+
 type chatboxProps = {
   open: boolean;
   onDock: () => void;
   openConferenceModal: () => void;
-  messages: any[];
+  messages: messageType[];
+  userId: string | undefined;
   title: string;
   handleSubmitMessage: (message: string) => void;
 };
@@ -17,7 +21,7 @@ type chatboxProps = {
 const Chatbox = (props: chatboxProps) => {
   const { open, onDock, title, openConferenceModal } = props;
   return (
-    <Sidebar name="chat" docked={open} onDock={onDock} className="xl:!w-[20vw]">
+    <Sidebar name="chat" docked={open} onDock={onDock}>
       <Sidebar.Header className="flex justify-center gap-2">
         <h3 className="text-lg font-bold flex-grow">{title}</h3>
         <button className="bg-accent text-contrast-dark p-2 rounded-full" onClick={openConferenceModal}>
@@ -30,22 +34,22 @@ const Chatbox = (props: chatboxProps) => {
   );
 };
 
-const ChatMessages = ({ messages }: chatboxProps) => (
-  <div className="flex-grow overflow-y-auto p-4 flex flex-col gap-5 border-b border-contrast-light">
+const ChatMessages = ({ messages, userId }: chatboxProps) => (
+  <div className="flex-grow overflow-y-auto p-4 flex flex-col gap-5 border-b border-contrast-dark">
     {messages.map((message, index) => (
-      <ChatMessage key={index} {...message} />
+      <ChatMessage key={index} {...message} userId={userId}/>
     ))}
   </div>
 );
 
-const ChatMessage = ({ author, message }: any) => (
-  <div className={`flex items-start ${author === "You" ? "justify-end" : "justify-start"}`}>
+const ChatMessage = ({ authorId, message, author, userId }: { author: string; message: string; userId: string | undefined, authorId: string }) => (
+  <div className={`flex items-start ${authorId === userId ? "justify-end" : "justify-start"}`}>
     <div
-      className={`border border-accent text-primary-dark px-3 py-2 rounded-2xl text-sm ${
-        author === "You" ? "rounded-br-none translate-x-2" : "rounded-bl-none -translate-x-2"
+      className={`border border-contrast-dark text-primary-dark px-3 py-2 rounded-2xl text-sm ${
+        authorId === userId ? "rounded-br-none translate-x-2 bg-primary-light text-black dark:text-white" : "rounded-bl-none -translate-x-2 bg-accent-dark text-white" 
       }`}>
-      <p className="mb-0">{message + message + message + message}</p>
-      <p className={`${author === "You" ? "text-right" : "text-right"} text-xs mt-2 text-accent`}>{author}</p>
+      <p className="mb-0">{message}</p>
+      <p className={`${authorId === userId ? "text-right text-black dark:text-white" : "text-right"} text-xs mt-2 text-white`}>{authorId === userId ? "You" : author}</p>
     </div>
   </div>
 );
@@ -63,7 +67,7 @@ const ChatInput = (props: chatboxProps) => {
   return (
     <form className="p-3 pt-5 m-2 rounded-2xl flex gap-2" onSubmit={handleFormSubmit}>
       <input
-        className="flex-grow p-2 px-4 rounded-3xl text-contrast-dark"
+        className="flex-grow p-2 px-4 rounded-3xl text-black bg-white"
         placeholder="Say Hi..."
         value={message}
         onChange={e => setMessage(e?.target?.value)}

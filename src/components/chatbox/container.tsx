@@ -5,25 +5,26 @@ import React, { useCallback, useEffect, useState } from "react";
 // components
 import Chatbox from "./chatbox";
 
-// dummy data
-import { messages as dummyMessages} from "./data";
-
 // store
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { chatDrawerAtom, conferenceModalAtom, userAtom } from "@/store/atoms";
-import { useSocket } from "@/hooks";
+import { useRecoilState, useSetRecoilState } from "recoil";
+
+// hooks
+import { useSocket, useStore, useUser } from "@/hooks";
+
+// types
+import { messageType } from "@/types";
 
 const ChatboxContainer = () => {
-  const [showChatBox, setShowChatBox] = useRecoilState(chatDrawerAtom);
+  const {chatDrawerAtom, conferenceModalAtom} = useStore();
+  const [isChatDrawerDocked, setIsChatDrawerDocked] = useRecoilState(chatDrawerAtom);
   const setModalState = useSetRecoilState(conferenceModalAtom);
-  const user = useRecoilValue(userAtom);
+  const {user} = useUser();
 
   const {socket} = useSocket();
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<messageType[]>([]);
 
   useEffect(() => {
-      socket?.on("message-recieved", (message) => {
-        console.log(`Message recieved`, message);
+      socket?.on("message-recieved", (message: messageType) => {
         setMessages(prev => [...prev, message]);
       });
 
@@ -44,14 +45,17 @@ const ChatboxContainer = () => {
     }, [socket]);
 
   const dockSidebar = () => {
-    setShowChatBox(true);
+    setIsChatDrawerDocked(prev => !prev);
   };
+
+  console.log({messages, user})
 
   return (
     <Chatbox
-      open={showChatBox}
+      open={isChatDrawerDocked}
       onDock={dockSidebar}
       messages={messages}
+      userId={user?.socketId}
       title="Chats"
       openConferenceModal={() => setModalState(prev => ({ ...prev, open: true }))}
       handleSubmitMessage={handleSubmitMessage}
