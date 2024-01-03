@@ -11,3 +11,8 @@ export const getOffsets = (parent: HTMLElement, child: HTMLElement) => {
     left: parentRect.left - childRect.left,
   };
 };
+
+export const getValueFromLocalStorage = (key: string) => {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(key);
+}

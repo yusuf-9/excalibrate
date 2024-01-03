@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 // components
 import Chatbox from "./chatbox";
@@ -13,48 +13,38 @@ import { useSocket, useStore, useUser } from "@/hooks";
 
 // types
 import { messageType } from "@/types";
+import { getValueFromLocalStorage } from "@/utils";
 
+// utils
 const ChatboxContainer = () => {
   const {chatDrawerAtom, conferenceModalAtom} = useStore();
   const [isChatDrawerDocked, setIsChatDrawerDocked] = useRecoilState(chatDrawerAtom);
   const setModalState = useSetRecoilState(conferenceModalAtom);
+  
   const {user} = useUser();
-
   const {socket} = useSocket();
-  const [messages, setMessages] = useState<messageType[]>([]);
+
+  const localChatHistory = useMemo(() => getValueFromLocalStorage("chat-history"), []);
+  const [messages, setMessages] = useState<messageType[]>(localChatHistory ? JSON.parse(localChatHistory) : []);
 
   useEffect(() => {
       socket?.on("message-recieved", (message: messageType) => {
         setMessages(prev => [...prev, message]);
       });
-      socket?.on("chat-history", (messages: messageType[]) => {
-        console.log("chat-history-revieved")
-        setMessages(messages);
-      });
   
     return () => {
       socket?.off("message-recieved");
-      socket?.off("message-history");
-
     };
   }, [socket]);
 
   const handleSubmitMessage = useCallback((message: string) => {
-      try {
-        const messagePayload = {
-          message,
-        }
-        socket?.emit("message", messagePayload);
-      } catch (error) {
-        console.log(error);
-      }
+      const messagePayload = { message };
+      socket?.emit("message", messagePayload);
     }, [socket]);
 
   const dockSidebar = () => {
     setIsChatDrawerDocked(prev => !prev);
   };
-
-  console.log({messages, user})
 
   return (
     <Chatbox

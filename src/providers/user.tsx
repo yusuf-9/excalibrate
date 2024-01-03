@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { useSocket, useStore } from "@/hooks";
 
 // Types
-import { UserType } from "@/types";
+import { UserType, messageType } from "@/types";
 import { useRouter } from "next/navigation";
 
 // Create the context
@@ -38,7 +38,6 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
   useEffect(() => {
     socket?.on("new-user-joined-room", (data: UserType) => {
-      console.log("new-user-joined-room", { data });
       setCollaboraters(prev => [...prev, data]);
     });
 
@@ -46,10 +45,16 @@ const UserProvider = ({ children }: UserProviderProps) => {
       setUser(data);
     });
 
+    socket?.on("chat-history", (data: messageType[]) => {
+      console.log("recieved chat history", data)
+      localStorage.setItem("chat-history", JSON.stringify(data));
+    });
+
     // Clean up the socket connection on component unmount
     return () => {
       socket?.off("new-user-joined-room");
       socket?.off("user-joined-room");
+      socket?.off("chat-history");
     };
   }, [setCollaboraters, setUser, socket]);
 
