@@ -15,16 +15,19 @@
   "dependencies": {
     "@excalidraw/excalidraw": "^0.17.2",
     "framer-motion": "^10.16.16",
+    "lodash": "^4.17.21",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.12.0",
+    "react-player": "^2.14.1",
     "recoil": "^0.7.7",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

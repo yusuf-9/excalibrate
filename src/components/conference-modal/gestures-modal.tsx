@@ -6,9 +6,12 @@ import { IoMdResize } from "react-icons/io";
 import { ImEnlarge } from "react-icons/im";
 import { TbWindowMinimize } from "react-icons/tb";
 
+// components
+import ConferenceContainer from "./conference-container";
+
 // utils
 import { join } from "@/utils";
-import ConferenceContainer from "./conference-container";
+
 
 // component props type
 type modalPropType = {
@@ -23,10 +26,11 @@ type modalPropType = {
   handleDrag: (e: any, info?: any) => void;
   handleDockModal: () => void;
   handleUndockModal: () => void;
+  handleCloseModal: () => void;
 };
 
 const ConferenceModal = forwardRef((props: modalPropType, ref: any) => {
-  const { docked, width, height, onPanStart, onPan, onPanEnd, handleDockModal, handleUndockModal, ...modalProps } = props;
+  const { docked, width, height, onPanStart, onPan, onPanEnd, handleDockModal, handleUndockModal, handleCloseModal, ...modalProps } = props;
 
   const modalContainerRef = useRef(null);
   const modalRef = useRef(null);
@@ -56,9 +60,10 @@ const ConferenceModal = forwardRef((props: modalPropType, ref: any) => {
           </>
         )}
         {!docked && <TbWindowMinimize className="absolute z-[1600] right-0 top-0 m-2 cursor-pointer h-5 w-5" onClick={handleDockModal} />}
+        <TbWindowMinimize className="absolute z-[1600] right-5 top-0 m-2 cursor-pointer h-5 w-5" onClick={handleCloseModal} />
       </>
     ),
-    [docked, handleUndockModal, handleDockModal, onPanStart, onPan, onPanEnd]
+    [docked, handleUndockModal, handleDockModal, onPanStart, onPan, onPanEnd, handleCloseModal]
   );
 
   return (

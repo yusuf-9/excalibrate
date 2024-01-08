@@ -20,7 +20,7 @@ const WelcomeForm = ({ searchParams }: { searchParams?: { [key: string]: string 
     <div className="flex flex-col justify-center items-center h-screen bg-primary-light text-contrast-dark gap-10">
       <section className="flex flex-col items-center justify-center gap-5">
         <Image src="/logo.png" alt="Excalidraw draw Logo" className="rounded-full border border-accent" width={100} height={24} priority />
-        <h1 className="text-2xl font-bold mb-4 capitalize md:w-3/4 xl:w-1/2 text-center">
+        <h1 className="text-lg md:text-2xl font-bold mb-4 capitalize md:w-3/4 xl:w-1/2 text-center">
           Welcome to Excalibrate — A wrapper for Excalidraw with live video and chat collaboration features!
         </h1>
       </section>

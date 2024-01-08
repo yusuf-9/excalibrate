@@ -107,6 +107,10 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
     };
   }, [modalState, setModalState, animationControls]);
 
+  const handleCloseModal = useCallback(() => {
+    setModalState(prev => ({ ...prev, open: false, docked: false }));
+  }, [setModalState]);
+
   // render ----------------------------------------------------------------------------------------------------------
 
   const modalProps = {
@@ -128,6 +132,7 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
     handleDrag,
     handleDockModal,
     handleUndockModal,
+    handleCloseModal,
     onMouseDown: handleDrag,
     onTouchStart: handleDrag,
     ref: modalRefs,
